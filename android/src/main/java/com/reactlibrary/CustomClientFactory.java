@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
@@ -67,6 +68,9 @@ public class CustomClientFactory implements OkHttpClientFactory {
             sslContext.init(keyManagerFactory.getKeyManagers(), new TrustManager[]{ trustManager }, new SecureRandom());
             return new OkHttpClient.Builder()
                     .sslSocketFactory(sslContext.getSocketFactory(), trustManager)
+                    .connectTimeout(5, TimeUnit.MINUTES)
+                    .writeTimeout(5, TimeUnit.MINUTES)
+                    .readTimeout(5, TimeUnit.MINUTES)
                     .hostnameVerifier(new HostnameVerifier() {
                         @Override
                         public boolean verify(String hostname, SSLSession session) {
